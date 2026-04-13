@@ -3,44 +3,31 @@ from functools import lru_cache
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+APP_NAME = "Audio Extractor API"
+APP_VERSION = "1.0.0"
+API_PREFIX = "/v1"
+MAX_UPLOAD_BYTES = 500 * 1024 * 1024
+MAX_REQUEST_BYTES = 520 * 1024 * 1024
+DEFAULT_OUTPUT_MIME = "audio/wav"
+DEFAULT_OUTPUT_EXTENSION = ".wav"
+FFMPEG_PATH = "ffmpeg"
+FFPROBE_PATH = "ffprobe"
+ALLOWED_ORIGINS = ["*"]
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    app_name: str = "Audio Extractor API"
-    app_version: str = "1.0.0"
-    api_prefix: str = "/v1"
-    log_level: str = "INFO"
-    max_upload_mb: int = 200
-    default_output_format: str = "original"
-    cors_origins: str = "*"
-    ffmpeg_path: str = "ffmpeg"
-    ffprobe_path: str = "ffprobe"
+    api_key: str = ""
 
-    @field_validator("default_output_format")
+    @field_validator("api_key")
     @classmethod
-    def validate_default_output_format(cls, value: str) -> str:
-        normalized = value.strip().lower()
-        if normalized not in {"original", "wav"}:
-            raise ValueError("default_output_format must be 'original' or 'wav'")
-        return normalized
-
-    @field_validator("max_upload_mb")
-    @classmethod
-    def validate_max_upload_mb(cls, value: int) -> int:
-        if value <= 0:
-            raise ValueError("max_upload_mb must be greater than zero")
-        return value
+    def validate_api_key(cls, value: str) -> str:
+        return value.strip()
 
     @property
-    def max_upload_bytes(self) -> int:
-        return self.max_upload_mb * 1024 * 1024
-
-    @property
-    def allowed_origins(self) -> list[str]:
-        if self.cors_origins.strip() == "*":
-            return ["*"]
-        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+    def api_key_enabled(self) -> bool:
+        return bool(self.api_key)
 
 
 @lru_cache(maxsize=1)

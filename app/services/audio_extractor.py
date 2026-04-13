@@ -55,22 +55,12 @@ def _probe_audio_codec(input_path: Path, ffprobe_path: str) -> str:
 
 
 def _preserve_extension(codec_name: str) -> tuple[str, str]:
-    codec_to_extension = {
-        "aac": (".mka", "audio/x-matroska"),
-        "alac": (".mka", "audio/x-matroska"),
-        "flac": (".flac", "audio/flac"),
-        "mp3": (".mp3", "audio/mpeg"),
-        "opus": (".opus", "audio/opus"),
-        "vorbis": (".ogg", "audio/ogg"),
-        "wav": (".wav", "audio/wav"),
-    }
-    return codec_to_extension.get(codec_name, (".mka", "audio/x-matroska"))
+    return ".wav", "audio/wav"
 
 
 def extract_audio_file(
     input_path: Path,
     output_dir: Path,
-    output_format: str,
     ffmpeg_path: str,
     ffprobe_path: str,
 ) -> ExtractionResult:
@@ -81,28 +71,7 @@ def extract_audio_file(
     if shutil.which(ffprobe_path) is None:
         raise AudioExtractionError(f"ffprobe executable was not found: {ffprobe_path}")
 
-    normalized_output_format = output_format.strip().lower()
-    if normalized_output_format not in {"original", "wav"}:
-        raise AudioExtractionError("output_format must be either 'original' or 'wav'")
-
     output_stem = input_path.stem or "audio"
-
-    if normalized_output_format == "wav":
-        output_path = output_dir / f"{output_stem}.wav"
-        command = [
-            ffmpeg_path,
-            "-y",
-            "-i",
-            str(input_path),
-            "-map",
-            "0:a:0",
-            "-vn",
-            "-c:a",
-            "pcm_s16le",
-            str(output_path),
-        ]
-        _run_command(command)
-        return ExtractionResult(output_path=output_path, media_type="audio/wav", filename=output_path.name)
 
     codec_name = _probe_audio_codec(input_path, ffprobe_path)
     extension, media_type = _preserve_extension(codec_name)
@@ -116,7 +85,7 @@ def extract_audio_file(
         "0:a:0",
         "-vn",
         "-c:a",
-        "copy",
+        "pcm_s16le",
         str(output_path),
     ]
     _run_command(command)
