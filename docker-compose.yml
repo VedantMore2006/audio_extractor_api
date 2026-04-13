@@ -1,0 +1,19 @@
+services:
+  audio_extractor_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: audio_extractor_api
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: Audio Extractor API
+      APP_VERSION: 1.0.0
+      API_PREFIX: /v1
+      LOG_LEVEL: INFO
+      MAX_UPLOAD_MB: 200
+      DEFAULT_OUTPUT_FORMAT: original
+      CORS_ORIGINS: "*"
+      FFMPEG_PATH: ffmpeg
+      FFPROBE_PATH: ffprobe
+    restart: unless-stopped
