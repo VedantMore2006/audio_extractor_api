@@ -5,7 +5,7 @@
 When running locally:
 
 ```text
-http://localhost:8000
+http://localhost:8012
 ```
 
 ## Endpoints
@@ -49,7 +49,7 @@ If `API_KEY` is configured, include the `X-API-Key` header in the request.
 ### Extract audio from MP4
 
 ```bash
-curl -X POST "http://localhost:8000/v1/extract-audio" \
+curl -X POST "http://localhost:8012/v1/extract-audio" \
   -F "file=@/path/to/video.mp4" \
   --output extracted-audio.wav
 ```
@@ -57,7 +57,7 @@ curl -X POST "http://localhost:8000/v1/extract-audio" \
 ### Extract audio from MKV with API key
 
 ```bash
-curl -X POST "http://localhost:8000/v1/extract-audio" \
+curl -X POST "http://localhost:8012/v1/extract-audio" \
   -F "file=@/path/to/video.mp4" \
   -H "X-API-Key: your-secret-key" \
   --output extracted-audio.wav
@@ -66,7 +66,7 @@ curl -X POST "http://localhost:8000/v1/extract-audio" \
 ### Extract audio from WEBM
 
 ```bash
-curl -X POST "http://localhost:8000/v1/extract-audio" \
+curl -X POST "http://localhost:8012/v1/extract-audio" \
   -F "file=@/path/to/video.webm" \
   --output extracted-audio.wav
 ```
@@ -74,7 +74,7 @@ curl -X POST "http://localhost:8000/v1/extract-audio" \
 ### Extract audio from MOV
 
 ```bash
-curl -X POST "http://localhost:8000/v1/extract-audio" \
+curl -X POST "http://localhost:8012/v1/extract-audio" \
   -F "file=@/path/to/video.mov" \
   --output extracted-audio.wav
 ```
@@ -82,7 +82,7 @@ curl -X POST "http://localhost:8000/v1/extract-audio" \
 ### Extract audio from AVI
 
 ```bash
-curl -X POST "http://localhost:8000/v1/extract-audio" \
+curl -X POST "http://localhost:8012/v1/extract-audio" \
   -F "file=@/path/to/video.avi" \
   --output extracted-audio.wav
 ```
@@ -95,4 +95,4 @@ curl -X POST "http://localhost:8000/v1/extract-audio" \
 
 - If the request is rejected with `413`, the file is larger than 500 MB.
 - If you get `400`, the input may be damaged, encrypted, or missing an audio stream.
-- If the container healthcheck fails, verify that ffmpeg is installed inside the image and the service is listening on port 8000.
+- If the container healthcheck fails, verify that ffmpeg is installed inside the image and the service is listening on port 8012.

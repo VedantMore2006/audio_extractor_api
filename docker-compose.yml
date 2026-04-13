@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: audio_extractor_api
     ports:
-      - "8000:8000"
+      - "8012:8012"
     environment:
       API_KEY: ""
     restart: unless-stopped
